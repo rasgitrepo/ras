@@ -1,9 +1,16 @@
 import React, { useState } from "react";
 import { Button, Form, Header, Input, Segment } from "semantic-ui-react";
 import cuid from "cuid";
-import { Link } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from "react-redux";
+import { createEvent, updateEvent } from "../eventAction";
 
-export default function EventForm({ setFormOpen, setEvents, createEvent, selectedEvent, updateEvent }) {
+export default function EventForm() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { id } = useParams();
+  const selectedEvent = useSelector(state => state.event.events.find(e => e.id === id)) ;
+
   const initialValues = selectedEvent ?? {
     title: "",
     category: "",
@@ -16,15 +23,15 @@ export default function EventForm({ setFormOpen, setEvents, createEvent, selecte
   const [values, setValues] = useState(initialValues);
 
   function handleFormSubmit() {
-    selectedEvent ? updateEvent({...selectedEvent, ...values})    
-    : createEvent({
+    selectedEvent ? dispatch(updateEvent({...selectedEvent, ...values}))    
+    : dispatch(createEvent({
       ...values,
       id: cuid(),
       hostedBy: 'Bob',
       attendees: [],
       hostPhotoURL: '/assets/user.png',
-    });
-    setFormOpen(false);
+    }));
+    navigate('/events');
   }
 
   function handleInputChange(e) {
@@ -95,7 +102,6 @@ export default function EventForm({ setFormOpen, setEvents, createEvent, selecte
           as={Link} to='/events'
           type='submit'
           floated='right'
-          positive
           content='Cancel'
         />
       </Form>

@@ -1,13 +1,15 @@
 import React, { Fragment } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { Container } from "semantic-ui-react";
 import EventDashboard from "../../features/events/eventDashboard/EventDashboard";
 import EventDetailedPage from "../../features/events/eventDetailed/EventDetailedPage";
 import EventForm from "../../features/events/eventForm/EventForm";
 import HomePage from "../../features/home/HomePage";
 import NavBar from "../../features/nav/NavBar";
+import Sandbox from "../../features/sandbox/Sandbox";
 
 export default function App() {
+  const {key} = useLocation();
 
   return (
     <>
@@ -16,8 +18,10 @@ export default function App() {
         <Routes>
           <Route path='/' exact element={<HomePage />} />
           <Route path='/events' exact element={<EventDashboard />} />
+          <Route path='/sandbox' exact element={<Sandbox />} />
           <Route path='/events/:id' element={<EventDetailedPage />} />
-          <Route path='/createEvent' element={<EventForm />} />
+          <Route path='/createEvent' exact element={<EventForm />} key={key} />
+          <Route path='/manage/:id' element={<EventForm />} key={key} />
         </Routes>
       </Container>
     </>
